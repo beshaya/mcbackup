@@ -58,7 +58,7 @@ function Backup {
         filename="${BASH_REMATCH[0]}_${world_last_modified}.zip"
         current_dir=${PWD}
         cd ${world}/..
-        zip -r ${current_dir}/${backup_path}/${filename} ${world##*/}
+        zip -r ${current_dir}/${backup_path}/${filename} ${world##*/} > /dev/null
         cd ${current_dir}
     else
         echo "No new activity since $world_last_readable"
@@ -91,7 +91,7 @@ function BackupRemote {
         last_zip=$(GetLastBackup $backup_path)
         remote_name=$(printf ${last_zip////'\n'} | tail -n 1)
         echo "Backing up ${bucket}${remote_name}."
-        gsutil cp ${last_zip} ${bucket}${remote_name}
+        gsutil cp ${last_zip} ${bucket}${remote_name} > /dev/null
     else
         echo "Next backup at $(($last_remote_seconds+$REMOTE_BACKUP_SECONDS))"
     fi
@@ -104,7 +104,7 @@ function RestoreRemote {
         (echo "no backups to restore!" && exit -1)
     restore_zip="restore.zip"
     echo "Restoring world from $last_remote_zip"
-    gsutil cp $last_remote_zip $restore_zip
+    gsutil cp $last_remote_zip $restore_zip > /dev/null
     unzip $restore_zip > /dev/null
     mv ${world##*/} $world
     rm $restore_zip
