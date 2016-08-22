@@ -3,6 +3,7 @@
 # A script to backup minecraft worlds
 
 REMOTE_BACKUP_SECONDS=$((60*60*24))
+BACKUPS_TO_KEEP=10
 
 function GetBackupPath {
     world=$1
@@ -28,6 +29,19 @@ GetSecondsFromBackup() {
     [[ $1 =~ _([0-9]*)\.zip ]]
     echo ${BASH_REMATCH[1]}
 }
+
+function Clean {
+    backup_path=$1
+    backups=($(find $1 -mindepth 1 | sort -nr))
+    if [ ${#backups[@]} .lt ${BACKUPS_TO_KEEP} ]; then
+        return 0
+    fi
+    backups_to_remove=("${backups[@]:${BACKUPS_TO_KEEP}}")
+    for file in ${backups_to_remove[@]}; do
+        echo "cleaning $file"
+        rm $file
+    done
+}
     
 function Backup {
     world=$1
@@ -49,6 +63,9 @@ function Backup {
     else
         echo "No new activity since $world_last_readable"
     fi
+
+    # Clean up old backups
+    Clean $backup_path
 }
 
 function BackupRemote {
