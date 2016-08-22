@@ -106,7 +106,7 @@ usage() {
 DIRECTION="backup"
 FORCE=false
 
-while getopts ":d:w:b:f" o; do
+while getopts ":d:w:b:s:f" o; do
     case "${o}" in
         d)
             DIRECTION=$OPTARG
@@ -120,6 +120,9 @@ while getopts ":d:w:b:f" o; do
         f)
             FORCE=true
             ;;
+        s)
+            SCREEN=$OPTARG
+            ;;
     esac
 done
 shift $((OPTIND-1))
@@ -130,7 +133,13 @@ if [[ "$WORLD" == "" ]]; then
 fi
 
 if [[ "$DIRECTION" == "backup" ]]; then
+    if [[ "$SCREEN" != "" ]]; then
+        screen -r -S $SCREEN -X stuff '/save-all\n/save-off\n'
+    fi
     Backup $WORLD
+    if [[ "$SCREEN" != "" ]]; then
+        screen -r -S $SCREEN -X stuff '/save-on\n'
+    fi
     if [[ "$BUCKET" != "" ]]; then
         BackupRemote $WORLD $BUCKET $FORCE
     fi
