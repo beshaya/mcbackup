@@ -23,7 +23,7 @@ GetLastModifiedReadable() {
 GetLastBackup() { find $1 | sort -nr | head -n 1; }
 GetLastRemoteBackup() {
     list=$(gsutil ls $1) || list="0_0.zip"
-    echo $list | sort -nr | head -n 1;
+    printf "$list" | sort -nr | head -n 1;
 }
 GetSecondsFromBackup() {
     [[ $1 =~ _([0-9]*)\.zip ]]
