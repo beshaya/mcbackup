@@ -151,11 +151,13 @@ fi
 
 if [[ "$DIRECTION" == "backup" ]]; then
     if [[ "$SCREEN" != "" ]]; then
+        screen -r -S $SCREEN -X stuff '/say Autosaving world...\n'
         screen -r -S $SCREEN -X stuff '/save-all\n/save-off\n'
     fi
     Backup $WORLD
     if [[ "$SCREEN" != "" ]]; then
         screen -r -S $SCREEN -X stuff '/save-on\n'
+        screen -r -S $SCREEN -X stuff '/say Save complete!\n'
     fi
     if [[ "$BUCKET" != "" ]]; then
         BackupRemote $WORLD $BUCKET $FORCE
