@@ -3,7 +3,7 @@
 # A script to backup minecraft worlds
 
 REMOTE_BACKUP_SECONDS=$((60*60*24))
-BACKUPS_TO_KEEP=10
+BACKUPS_TO_KEEP=2
 
 function GetBackupPath {
     world=$1
